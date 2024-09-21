@@ -7,22 +7,11 @@ class BlockWorldAgent:
        pass
    
    def tup(self, lists):
-      return tuple(tuple(list) for list in lists)
+      return tuple(sorted(tuple(list) for list in lists))
 
-   def move_to_table(self, states, block):
-        state = [state[:] for state in states]
-        for stack in state:
-          if stack[-1] == block:
-            if len(stack) == 1:
-                continue
-            stack.pop()
-        state.append([block])
-        return state
-        '''initial_arrangement_1 = [["A", "B", "C"], ["D", "E"]]
-          goal_arrangement_1 = [["A", "C"], ["D", "E", "B"]]'''
-       
+
    def move_to_block(self, states, block, pairs):
-
+       inplace = True
        state = [state[:] for state in states]
        for stack in state:
           if stack[-1] == block:
@@ -30,13 +19,30 @@ class BlockWorldAgent:
             if len(stack) == 0:
                 state.remove(stack)
             break
-       for other_stack in state:
-           if pairs[block] == 'Table':
+     # if the block is a bottom block make a new stack
+       if pairs[block] == 'Table':
                state.append([block])
-               return state, 'Table'
-           if stack!= other_stack and other_stack[-1] == pairs[block]:
+               return state, -1
+       for other_stack in state:
+           # if we are iterating through the current stack 
+           if other_stack == stack and stack[-1] == pairs[block]:
+               for i in range(len(stack) - 1):
+                   if pairs[stack[0]] != 'Table' and pairs[stack[i+1]] != stack[i]:
+                       inplace = False
+                       # if it's in the spot and the bottom block is supposed to be there 
+               if inplace:
+                   if pairs[stack[0]] == 'Table':
+                       stack.append(block)
+                    #print('Inplace')
+                       return state, -1 
+                   else:
+                       state.append([block])
+                       return state, -1
+                   
+           elif other_stack[-1] == pairs[block]:
                for i in range(len(other_stack)-1):
                    if pairs[other_stack[i+1]] != other_stack[i] or pairs[other_stack[0]] != 'Table':
+                       state.append([block])
                        return state, -1
                other_stack.append(block)
                return state, pairs[block]
@@ -45,28 +51,34 @@ class BlockWorldAgent:
                
    def solve(self, initial_arrangement, goal_arrangement):
        pairs = {}
+       count = 0
        for i in range(len(goal_arrangement)):
            for j in range(len(goal_arrangement[i])-1):
                pairs[goal_arrangement[i][j+1]] = goal_arrangement[i][j]
-           pairs[goal_arrangement[i][0]] = 'Table'
-               
+           pairs[goal_arrangement[i][0]] = 'Table'  
        q = []
        visited = set()
        q.append((initial_arrangement, []))
        visited.add(self.tup(initial_arrangement))
        while q:
+            if count > 100000:
+                break
             state, path = q.pop(0)
             print(state)
-            if state == goal_arrangement:
+            if self.tup(state) == self.tup(goal_arrangement):
                 return path
             for stack in state:
                             x = stack[-1]
                             new, y = self.move_to_block(state, x, pairs)
                     
-                            if self.tup(new) not in visited and y != -1:
+                            if self.tup(new) not in visited:
                                 visited.add(self.tup(new))
-                                q.append((new, path + [x, y]))
-                            
+                                if y == -1:
+                                    q.append((new, path + [[x, 'Table']]))
+
+                                else:
+                                    q.append((new, path + [[x, y]]))
+                            '''
                             if len(stack) > 1:
                                 #print(f'state: {state}')
                                 new = self.move_to_table(state, x)
@@ -76,8 +88,8 @@ class BlockWorldAgent:
                                     q.append((new, path + [x, 'Table']))
                             if len(stack) == 0:
                                 state.remove(stack)
-                            
-       return []
+                            '''
+       q.append((state, path))
            
            
 

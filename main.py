@@ -11,7 +11,7 @@ def test():
     goal_arrangement_3 = [["D", "E", "A", "B", "C"]]
     goal_arrangement_4 = [["C", "D"], ["E", "A", "B"]]
 
-    print(test_agent.solve(initial_arrangement_1, goal_arrangement_1))
+    #print(test_agent.solve(initial_arrangement_1, goal_arrangement_1))
     #print(test_agent.solve(initial_arrangement_1, goal_arrangement_2))
    # print(test_agent.solve(initial_arrangement_1, goal_arrangement_3))
     #print(test_agent.solve(initial_arrangement_1, goal_arrangement_4))
@@ -24,8 +24,11 @@ def test():
 
     #print(test_agent.solve(initial_arrangement_2, goal_arrangement_5))
     #print(test_agent.solve(initial_arrangement_2, goal_arrangement_6))
-    #print(test_agent.solve(initial_arrangement_2, goal_arrangement_7))
+    print(test_agent.solve(initial_arrangement_2, goal_arrangement_7))
     #print(test_agent.solve(initial_arrangement_2, goal_arrangement_8))
 
+    initial_arrangement_3 = [['O'], ['B', 'L', 'K', 'D'], ['A', 'F', 'G', 'J', 'E', 'C', 'H'], ['N'], ['I', 'M']]
+    goal_arrangement_9 = [['B', 'K'], ['A', 'F', 'J', 'E', 'H', 'D'], ['O', 'L', 'M', 'G'], ['I'], ['N', 'C']]
+    print(test_agent.solve(initial_arrangement_3, goal_arrangement_9))
 if __name__ == "__main__":
     test()
