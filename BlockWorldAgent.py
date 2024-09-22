@@ -27,25 +27,27 @@ class BlockWorldAgent:
            # if we are iterating through the current stack 
            if other_stack == stack and stack[-1] == pairs[block]:
                for i in range(len(stack) - 1):
-                   if pairs[stack[0]] != 'Table' and pairs[stack[i+1]] != stack[i]:
+                   if pairs[stack[0]] != 'Table' or pairs[stack[i+1]] != stack[i]:
                        inplace = False
                        # if it's in the spot and the bottom block is supposed to be there 
                if inplace:
                    if pairs[stack[0]] == 'Table':
                        stack.append(block)
                     #print('Inplace')
-                       return state, -1 
-                   else:
-                       state.append([block])
-                       return state, -1
+                       return state, None
+                   #else:
+                       #state.append([block])
+                       #return state, -1
                    
            elif other_stack[-1] == pairs[block]:
                for i in range(len(other_stack)-1):
                    if pairs[other_stack[i+1]] != other_stack[i] or pairs[other_stack[0]] != 'Table':
                        state.append([block])
                        return state, -1
-               other_stack.append(block)
-               return state, pairs[block]
+                #necessary if the stack length is only 1 because for loop won't iterate
+               if pairs[other_stack[0]] == 'Table':
+                other_stack.append(block)
+                return state, pairs[block]
        state.append([block])
        return state, -1 
                
@@ -64,7 +66,7 @@ class BlockWorldAgent:
             if count > 100000:
                 break
             state, path = q.pop(0)
-            print(state)
+
             if self.tup(state) == self.tup(goal_arrangement):
                 return path
             for stack in state:
