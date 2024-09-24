@@ -63,6 +63,7 @@ class BlockWorldAgent:
        q.append((initial_arrangement, []))
        visited.add(self.tup(initial_arrangement))
        while q:
+            print(q)
             if count > 100000:
                 break
             state, path = q.pop(0)
